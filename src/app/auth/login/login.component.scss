@@ -1,0 +1,33 @@
+@import '~@angular/material/theming';
+
+mat-card {
+  padding: 30px 30px;
+  height: 100%;
+
+  &:hover {
+    @include mat-elevation(5);
+  }
+}
+
+mat-card-footer {
+  padding-left: 16px;
+  padding-bottom: 16px;
+}
+
+mat-error {
+  margin-bottom: 5px;
+}
+
+@media (min-width:768px) {
+  :host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  mat-card {
+    margin-top: 100px;
+    min-width: 400px;
+    height: auto;
+  }
+}
