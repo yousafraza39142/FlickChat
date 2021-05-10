@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "echat-172e0": {
+      "hosting": {
+        "FlickChat": [
+          "echat-172e0"
+        ]
+      }
+    }
+  }
+}

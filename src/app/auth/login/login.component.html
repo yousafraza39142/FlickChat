@@ -1,44 +1,51 @@
 <mat-card>
-  <form class="form" [formGroup]="loginForm">
-    <mat-card-title>Login</mat-card-title>
-    <mat-card-subtitle>Enter the credentials</mat-card-subtitle>
-    <mat-card-content>
+	<form class="form" [formGroup]="loginForm">
+		<mat-card-title>Login</mat-card-title>
+		<mat-card-subtitle>Enter the credentials</mat-card-subtitle>
+		<mat-card-content>
 
-      <mat-form-field class="example-full-width">
-        <mat-label>Email/User Name</mat-label>
-        <input matInput placeholder="Email/User Name" [formControl]="email" value="">
-        <mat-error *ngIf="email.hasError('required')">
-          Email is <strong>required</strong>
-        </mat-error>
-        <mat-error *ngIf="email.hasError('email')">
-          <strong>Invalid</strong> Email address
-        </mat-error>
-      </mat-form-field>
-      <br>
-      <mat-form-field class="example-full-width">
-        <mat-label>Password</mat-label>
-        <input type="password" matInput placeholder="Password" [formControl]="password" value="">
-        <mat-error *ngIf="password.hasError('required')">
-          Password is <strong>required</strong>
-        </mat-error>
-        <mat-error *ngIf="password.hasError('minlength')">
-          <strong>Minimum</strong> password of length 8
-        </mat-error>
-      </mat-form-field>
+			<mat-form-field class="example-full-width">
+				<mat-label>Email/User Name</mat-label>
+				<input matInput placeholder="Email/User Name" [formControl]="email" value="">
+				<mat-error *ngIf="email.hasError('required')">
+					Email is <strong>required</strong>
+				</mat-error>
+				<mat-error *ngIf="email.hasError('email')">
+					<strong>Invalid</strong> Email address
+				</mat-error>
+			</mat-form-field>
+			<br>
+			<mat-form-field class="example-full-width">
+				<mat-label>Password</mat-label>
+				<input type="password" matInput placeholder="Password" [formControl]="password" value="">
+				<mat-error *ngIf="password.hasError('required')">
+					Password is <strong>required</strong>
+				</mat-error>
+				<mat-error *ngIf="password.hasError('minlength')">
+					<strong>Minimum</strong> password of length 8
+				</mat-error>
+			</mat-form-field>
 
-      <mat-checkbox class="example-margin mat-small" [formControl]="keepLoggedIn">keep me logged in</mat-checkbox>
+			<mat-checkbox class="example-margin mat-small" [formControl]="keepLoggedIn">keep me logged in</mat-checkbox>
+		</mat-card-content>
+		<mat-card-actions align="right">
+			<button color="primary" (click)="onSubmit()" mat-raised-button>Login</button>
+			<div class="sign-up-subtext">Don't have an account? <span>Sign up</span></div>
+		</mat-card-actions>
+		<mat-card-footer>
+			<div class="sign-up-providers">
+				<span class="mat-small">Or Sign Up Using</span>
+				<div class="providers">
+					<i (click)="googleSignIn()" class="fab fa-google"></i>
+					<i class="fab fa-facebook"></i>
+					<i class="fab fa-github"></i>
+				</div>
+			</div>
+			<!--<span class="mat-small">&copy; Copy Rights Reserved</span>-->
+			<!--Debugging purpose-->
+			<!--<pre>{{loginForm.value | json}}</pre>
+			<pre>{{password.errors | json}}</pre>-->
+		</mat-card-footer>
 
-    </mat-card-content>
-    <mat-card-actions align="right">
-      <button color="warn" mat-raised-button (click)="onCancel()">Cancel</button>
-      <button color="primary" (click)="onSubmit()" mat-raised-button>Login</button>
-    </mat-card-actions>
-    <mat-card-footer>
-      <!--Debugging purpose-->
-      <span class="mat-small">&copy; Copy Rights Reserved</span>
-      <!--<pre>{{loginForm.value | json}}</pre>
-      <pre>{{password.errors | json}}</pre>-->
-    </mat-card-footer>
-
-  </form>
+	</form>
 </mat-card>

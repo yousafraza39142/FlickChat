@@ -1,4 +1,5 @@
-@import '~@angular/material/theming';
+@use "sass:map";
+@import "src/app/styles/main";
 
 mat-card {
   padding: 30px 30px;
@@ -14,8 +15,68 @@ mat-card-footer {
   padding-bottom: 16px;
 }
 
+mat-card-actions {
+  padding-top: 30px;
+  button {
+    width: 100%;
+
+    &:not(:nth-child(1)) {
+      margin-top: 10px;
+    }
+  }
+
+  .sign-up-subtext {
+    color: $color-grey;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 12px;
+    cursor: default;
+    span {
+      //color: $color-light-grey;
+      color: map.get($mat-indigo, A700);
+      cursor: pointer;
+    }
+  }
+}
+
 mat-error {
   margin-bottom: 5px;
+}
+
+button.sign-in-google-btn {
+  width: 90%;
+  display: block;
+  margin: auto;
+}
+
+.sign-up-providers {
+	text-align: center;
+	.fa-google {
+		background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.fa-facebook {
+		color: rgb(66, 103, 178);
+	}
+
+	.providers {
+		margin-top: 10px;
+		i + i {
+			margin-left: 20px;
+		}
+		i {
+			cursor: pointer;
+			font-size: 48px;
+
+			&:hover {
+				filter: dropShadow(50);
+			}
+		}
+	}
 }
 
 @media (min-width:768px) {

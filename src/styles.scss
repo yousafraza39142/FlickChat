@@ -1,26 +1,33 @@
 /* You can add global styles to this file, and also import other style files */
-@import './variables';
-@import 'material-overrides';
+@import "app/styles/main";
+
 * {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
 }
 
 body {
-  background: $color-grey;
+	background: $color-bg-grey;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 
 pre {
-  display: block;
-  background: $color-grey;
-  border: 1px solid darken($color-grey, 20);
-  padding: 10px;
-  margin: 5px;
-  border-radius: 10px;
-  overflow: hidden;
+	display: block;
+	background: $color-grey;
+	color: white;
+	border: 1px solid darken($color-bg-grey, 20);
+	padding: 10px;
+	margin: 5px;
+	border-radius: 10px;
+	overflow: hidden;
 }
