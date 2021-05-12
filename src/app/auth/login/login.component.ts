@@ -24,16 +24,13 @@ export class LoginComponent implements OnInit {
 
 
 	constructor(private router: Router, private userService: UserService) {
-
+		this.userService.auth.authState.subscribe( isAuthenticated => {
+			if (isAuthenticated) this.router.navigate(['home']);
+		})
 	}
 
 
 	ngOnInit(): void {
-	}
-
-
-	onSubmit(): void {
-		this.router.navigate(['home']);
 	}
 
 

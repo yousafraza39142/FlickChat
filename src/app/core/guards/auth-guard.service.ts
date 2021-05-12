@@ -5,13 +5,13 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {UserService} from '../services/user.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {UtilitiesService} from '../services/utilities.service';
-import {catchError, tap} from 'rxjs/operators';
+import {catchError, map, take, tap} from 'rxjs/operators';
 import {loggedIn} from '@angular/fire/auth-guard';
 
 @Injectable({
 	providedIn: 'root'
 })
-export class LoggedInGuard implements CanActivate, CanActivateChild {
+export class AuthGuard implements CanActivate, CanActivateChild {
 
 	constructor(
 		private userService: UserService,
@@ -24,9 +24,9 @@ export class LoggedInGuard implements CanActivate, CanActivateChild {
 	canActivate(
 		route: ActivatedRouteSnapshot,
 		state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-		// _TODO: Implement LoggedIn logic
 		return this.canActivateAnything();
 	}
+
 
 	canActivateChild(
 		childRoute: ActivatedRouteSnapshot,
@@ -35,19 +35,13 @@ export class LoggedInGuard implements CanActivate, CanActivateChild {
 	}
 
 
-	canActivateAnything(): Observable<boolean> {
-		return this.userService.isLoggedIn().pipe(tap(isLoggedIn => {
-			console.log(isLoggedIn);
+	private canActivateAnything(): Observable<boolean | UrlTree> {
+		return this.userService.isLoggedIn().pipe(take(1),map(isLoggedIn => {
 			if (isLoggedIn) {
 				return true;
 			}
-
-			this.utils.openSnackBar('No User Found 😭, Logging Out', null);
+			this.utils.openSnackBar('😓, Please Log in First.', null);
 			return this.router.parseUrl('auth');
-		}), catchError(r => {
-			// TODO: Replace with own logger service in future
-			console.error('AUTH-GUARD', r);
-			return of(false);
-		}));
+		}), catchError(this.utils.catchErrorLog));
 	}
 }

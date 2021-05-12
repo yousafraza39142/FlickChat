@@ -12,11 +12,6 @@ import firebase from 'firebase';
 export class HomeComponent implements OnInit {
 
 	constructor(public userService: UserService, private router: Router) {
-		this.userService.auth.authState.subscribe(state => {
-			if (!state) {
-				this.navigateToAuth();
-			}
-		});
 	}
 
 
@@ -26,7 +21,7 @@ export class HomeComponent implements OnInit {
 
 	logout(): void {
 		this.userService.logout().subscribe(value => {
-			console.log(value);
+			this.navigateToAuth();
 		});
 	}
 

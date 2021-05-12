@@ -29,7 +29,7 @@
 			<mat-checkbox class="example-margin mat-small" [formControl]="keepLoggedIn">keep me logged in</mat-checkbox>
 		</mat-card-content>
 		<mat-card-actions align="right">
-			<button color="primary" (click)="onSubmit()" mat-raised-button>Login</button>
+			<button color="primary" mat-raised-button>Login</button>
 			<div class="sign-up-subtext">Don't have an account? <span>Sign up</span></div>
 		</mat-card-actions>
 		<mat-card-footer>
@@ -41,10 +41,7 @@
 					<i class="fab fa-github"></i>
 				</div>
 			</div>
-			<!--<span class="mat-small">&copy; Copy Rights Reserved</span>-->
-			<!--Debugging purpose-->
-			<!--<pre>{{loginForm.value | json}}</pre>
-			<pre>{{password.errors | json}}</pre>-->
+<!--			{{((this.userService.auth?.user | async) | json)}}-->
 		</mat-card-footer>
 
 	</form>

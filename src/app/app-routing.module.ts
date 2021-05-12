@@ -1,16 +1,18 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {LoggedInGuard} from './core/guards/logged-in.guard';
+import {AuthGuard} from './core/guards/auth-guard.service';
+import {NotLoggedInGuard} from './core/guards/not-logged-in-guard.service';
 
 const routes: Routes = [
 	{
 		path: 'auth',
-		loadChildren: () => import('./auth/auth.module').then(module => module.AuthModule)
+		loadChildren: () => import('./auth/auth.module').then(module => module.AuthModule),
+		canActivate: [NotLoggedInGuard],
 	},
 	{
 		path: 'home',
 		loadChildren: () => import('./home/home.module').then(module => module.HomeModule),
-		canActivate: [LoggedInGuard],
+		canActivate: [AuthGuard],
 	},
 	{
 		path: '',

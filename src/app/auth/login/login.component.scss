@@ -73,7 +73,8 @@ button.sign-in-google-btn {
 			font-size: 48px;
 
 			&:hover {
-				filter: dropShadow(50);
+				transform: scale(1.1);
+
 			}
 		}
 	}

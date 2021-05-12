@@ -44,6 +44,6 @@ export class UserService {
 
 
 	isLoggedIn(): Observable<boolean> {
-		return this.auth.user.pipe(map(user => !!user));
+		return this.auth.user.pipe(map(user => !!user?.uid));
 	}
 }
