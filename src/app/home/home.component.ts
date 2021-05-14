@@ -3,6 +3,7 @@ import {UserService} from '../core/services/user.service';
 import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
 import firebase from 'firebase';
+import {Actions} from '../shared/models';
 
 @Component({
 	selector: 'app-home',
@@ -10,6 +11,8 @@ import firebase from 'firebase';
 	styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+	NavDefaultState = true;
+	Actions = Actions;
 
 	constructor(public userService: UserService, private router: Router) {
 	}
@@ -33,5 +36,10 @@ export class HomeComponent implements OnInit {
 
 	private navigateToAuth(): void {
 		this.router.navigate(['auth']);
+	}
+
+
+	iconActions($event: Actions) {
+		console.log($event);
 	}
 }

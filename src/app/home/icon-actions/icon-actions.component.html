@@ -1,0 +1,7 @@
+<div class="container">
+	<ul class="actions">
+		<li class="action" [class.active]="currentAction === Actions.CHATS" (click)="action(Actions.CHATS)"><mat-icon>chat</mat-icon></li>
+		<li class="action" [class.active]="currentAction === Actions.CONTACTS" (click)="action(Actions.CONTACTS)"><mat-icon>people</mat-icon></li>
+		<li class="action" [class.active]="currentAction === Actions.SETTINGS" (click)="action(Actions.SETTINGS)"><mat-icon>settings</mat-icon></li>
+	</ul>
+</div>

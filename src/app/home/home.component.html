@@ -1,11 +1,24 @@
-<mat-toolbar color="primary">
-	<button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
-		<mat-icon>menu</mat-icon>
-	</button>
-	<span>My App</span>
-	<span class="spacer"></span>
-	<button (click)="logout()" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-		<mat-icon>power_settings_new</mat-icon>
-	</button>
-</mat-toolbar>
-<pre>{{(user | async) | json}}</pre>
+<mat-drawer-container class="app-container" autosize>
+	<mat-drawer #drawer [opened]="NavDefaultState" class="app-sidenav container" mode="side">
+		<app-profile-view
+			[imageUrl]="(user | async)?.photoURL"
+			[userName]="(user | async)?.displayName"
+		></app-profile-view>
+		<app-icon-actions #actions (eventAction)="iconActions($event)"></app-icon-actions>
+		<ng-container *ngIf="actions.currentAction == Actions.CHATS">
+			Chats
+		</ng-container>
+		<ng-container *ngIf="actions.currentAction == Actions.SETTINGS">
+			Settings
+		</ng-container>
+		<ng-container *ngIf="actions.currentAction == Actions.CONTACTS">
+			Contacts
+		</ng-container>
+	</mat-drawer>
+
+	<mat-drawer-content class="app-sidenav-content">
+		<div class="side-nav-container">
+			<h1>IN-Production X_X</h1>
+		</div>
+	</mat-drawer-content>
+</mat-drawer-container>
