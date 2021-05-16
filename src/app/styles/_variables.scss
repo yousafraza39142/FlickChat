@@ -5,4 +5,25 @@ $color-lighter-grey: #DEDEDE;
 $color-lightest-grey: #BBBBBB;
 
 
-$color-text-white: #f5f5f5
+// Color pallet
+$color-primary: #311b92;
+$color-primary-light: lighten($color-primary, 4);
+$color-primary-dark: darken($color-primary, 4);
+
+$color-secondary: #F0DF9D;
+$color-secondary-light: lighten($color-secondary, 4);
+$color-secondary-dark: darken($color-secondary, 4);
+
+$color-text-white: #ffff;
+$color-text-light: transparentize($color-text-white, .3);
+$color-text-lighter: transparentize($color-text-white, .5);
+$color-text-lightest: transparentize($color-text-white, .7);
+
+$color-lightest-gray: #F6F7F9;
+$color-lighter-gray: #E8E9ED;
+$color-light-gray: #D0D0D3;
+$color-gray: #A0A5AE;
+$color-dark-gray: #676972;
+$color-darker-gray: #37373E;
+
+$color-charcoal: #27272A;

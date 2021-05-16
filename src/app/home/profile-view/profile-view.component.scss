@@ -9,32 +9,11 @@
 	align-items: start;
 	grid-gap: 15px;
 
-	.image-section {
-		position: relative;
-		width: 50px;
-		height: 50px;
-		border-radius: 50px;
-		border: .5px solid transparentize($color-lightest-grey, 0.5);
-		background-size: contain;
-
-		&.online:before {
-			content: '';
-			width: 8px;
-			height: 8px;
-			border-radius: 50px;
-			background: green;
-			position: absolute;
-			bottom: 0;
-			right: 2px;
-
-		}
-	}
-
 	.name-section {
 		padding-top: 10px;
 		font-size: 16px;
 		font-weight: bolder;
 		letter-spacing: 2px;
-		color: transparentize($color-text-white, .3);
+		color: $color-text-light;
 	}
 }

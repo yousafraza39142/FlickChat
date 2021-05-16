@@ -7,6 +7,7 @@ import GoogleAuthProvider = firebase.auth.GoogleAuthProvider;
 import User = firebase.User;
 import {Router} from '@angular/router';
 import {map} from 'rxjs/operators';
+import FacebookAuthProvider = firebase.auth.FacebookAuthProvider;
 
 @Injectable({
 	providedIn: 'root'
@@ -30,6 +31,11 @@ export class UserService {
 
 	loginWithGoogle(): Observable<UserCredential> {
 		return from(this.auth.signInWithPopup(new GoogleAuthProvider()));
+	}
+
+
+	loginWithFacebook(): Observable<UserCredential> {
+		return from(this.auth.signInWithPopup(new FacebookAuthProvider()));
 	}
 
 

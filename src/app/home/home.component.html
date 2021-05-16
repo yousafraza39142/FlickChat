@@ -1,15 +1,20 @@
 <mat-drawer-container class="app-container" autosize>
-	<mat-drawer #drawer [opened]="NavDefaultState" class="app-sidenav container" mode="side">
-		<app-profile-view
-			[imageUrl]="(user | async)?.photoURL"
-			[userName]="(user | async)?.displayName"
-		></app-profile-view>
-		<app-icon-actions #actions (eventAction)="iconActions($event)"></app-icon-actions>
-		<ng-container *ngIf="actions.currentAction == Actions.CHATS">
-			Chats
-		</ng-container>
+	<mat-drawer #drawer class="app-sidenav container"
+				[mode]="!!(isHandSet$ | async).matches ? 'over' : 'side'"
+				[opened]="!(isHandSet$ | async)?.matches"
+	>
+		<div class="sticky-container">
+			<app-profile-view
+				[imageUrl]="user?.photoURL"
+				[userName]="user?.displayName"
+			></app-profile-view>
+			<app-icon-actions #actions (eventAction)="iconActions($event)"></app-icon-actions>
+		</div>
+
+		<app-chats *ngIf="actions.currentAction == Actions.CHATS"></app-chats>
+
 		<ng-container *ngIf="actions.currentAction == Actions.SETTINGS">
-			Settings
+			<button (click)="logout()">Logout</button>
 		</ng-container>
 		<ng-container *ngIf="actions.currentAction == Actions.CONTACTS">
 			Contacts
@@ -17,8 +22,25 @@
 	</mat-drawer>
 
 	<mat-drawer-content class="app-sidenav-content">
+		<mat-toolbar>
+			<button *ngIf="(isHandSet$ | async).matches" mat-mini-fab color="primary" class="hamburger-btn" (click)="drawer.toggle()">
+				<mat-icon> menu</mat-icon>
+			</button>
+			<app-profile-image class="border-dark" [imageUrl]="user?.photoURL" [online]="true"></app-profile-image>
+			<div class="name">
+				<div class="heading">Chat Name</div>
+				<div class="description">this is a description text</div>
+			</div>
+			<div class="spacer"></div>
+			<ul class="options">
+				<li class="item">participants</li>
+				<li class="item">Invite</li>
+				<li class="item"><i class="fas fa-cog"></i></li>
+			</ul>
+		</mat-toolbar>
 		<div class="side-nav-container">
-			<h1>IN-Production X_X</h1>
+
+<!--			<h1>IN-Production X_X</h1>-->
 		</div>
 	</mat-drawer-content>
 </mat-drawer-container>

@@ -1,20 +1,37 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {UserService} from '../core/services/user.service';
-import {Observable} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
-import firebase from 'firebase';
 import {Actions} from '../shared/models';
+import {UtilitiesService} from '../core/services/utilities.service';
+import {share} from 'rxjs/operators';
+import firebase from 'firebase';
 
 @Component({
 	selector: 'app-home',
 	templateUrl: './home.component.html',
 	styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
-	NavDefaultState = true;
-	Actions = Actions;
+export class HomeComponent implements OnInit, OnDestroy {
 
-	constructor(public userService: UserService, private router: Router) {
+	NavDefaultState = true;
+	Actions         = Actions;
+	isHandSet$      = this.utils.isHandSet$;
+
+	user : firebase.User = null;
+
+
+	private subs: Subscription = new Subscription();
+
+	constructor(public userService: UserService,
+				private router: Router,
+				private utils: UtilitiesService
+	) {
+		this.subs.add(
+			this.userService.getUser().subscribe(user => {
+				this.user = user;
+			})
+		);
 	}
 
 
@@ -22,15 +39,15 @@ export class HomeComponent implements OnInit {
 	}
 
 
+	ngOnDestroy(): void {
+		this.subs.unsubscribe();
+	}
+
+
 	logout(): void {
 		this.userService.logout().subscribe(value => {
 			this.navigateToAuth();
 		});
-	}
-
-
-	get user(): Observable<firebase.User> {
-		return this.userService.getUser();
 	}
 
 

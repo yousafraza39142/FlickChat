@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router} from '@angular/router';
-import {Observable, of} from 'rxjs';
+import {BehaviorSubject, Observable, of} from 'rxjs';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {UserService} from '../services/user.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -12,6 +12,9 @@ import {loggedIn} from '@angular/fire/auth-guard';
 	providedIn: 'root'
 })
 export class AuthGuard implements CanActivate, CanActivateChild {
+
+	// Used when guard is fetching state from server to show loading
+	public loader$ = new BehaviorSubject<boolean>(false);
 
 	constructor(
 		private userService: UserService,
@@ -36,7 +39,10 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 
 
 	private canActivateAnything(): Observable<boolean | UrlTree> {
+		this.loader$.next(true);
 		return this.userService.isLoggedIn().pipe(take(1),map(isLoggedIn => {
+			this.loader$.next(false);
+
 			if (isLoggedIn) {
 				return true;
 			}

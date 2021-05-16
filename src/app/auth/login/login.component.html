@@ -37,11 +37,10 @@
 				<span class="mat-small">Or Sign Up Using</span>
 				<div class="providers">
 					<i (click)="googleSignIn()" class="fab fa-google"></i>
-					<i class="fab fa-facebook"></i>
+					<i (click)="facebookSignIn()" class="fab fa-facebook"></i>
 					<i class="fab fa-github"></i>
 				</div>
 			</div>
-<!--			{{((this.userService.auth?.user | async) | json)}}-->
 		</mat-card-footer>
 
 	</form>

@@ -1,3 +1,5 @@
+@import "src/app/styles/main";
+
 .spacer {
 	flex: 1 1 auto;
 }
@@ -13,9 +15,10 @@
 	background: transparent;
 }
 
-.app-sidenav-content{
+.app-sidenav-content {
 
 	background: #E5E5FE;
+
 	.side-nav-container {
 		display: flex;
 		height: 100%;
@@ -32,6 +35,80 @@
 
 
 mat-drawer {
-	background: #271C46;
+	//background: $color-primary;
+	background: $color-charcoal;
 
+	::ng-deep.mat-drawer-inner-container::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+app-chats {
+	display: block;
+	margin-top: 20px;
+}
+
+.sticky-container {
+	//background: $color-primary;
+	background: $color-charcoal;
+	z-index: 100;
+	position: -webkit-sticky;
+	position: sticky;
+	top: 0;
+}
+
+mat-toolbar {
+	//background: $color-primary;
+	padding: 60px 60px;
+	color: $color-charcoal;
+
+	.hamburger-btn {
+		position: absolute;
+		left: 10px;
+	}
+
+	.name {
+		display: flex;
+		flex-direction: column;
+		margin-left: 20px;
+
+
+		.description {
+			font-size: 12px;
+		}
+	}
+
+	.spacer {
+		flex: 1;
+	}
+
+	.options {
+		font-size: 16px;
+		padding: 0;
+		list-style: none;
+		display: flex;
+
+		li {
+			cursor: pointer;
+			text-transform: capitalize;
+			transition: .2s ease-in-out;
+			transform-origin: center center;
+			position: relative;
+
+			& + li {
+				margin-left: 20px;
+			}
+
+			&:not(:last-child) {
+				color: $color-gray;
+			}
+
+			&:not(:first-child):before {
+				content: '|';
+				position: absolute;
+				left: -10px;
+				color: $color-gray;
+			}
+		}
+	}
 }

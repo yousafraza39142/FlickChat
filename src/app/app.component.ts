@@ -1,4 +1,5 @@
 import {Component} from '@angular/core';
+import {AuthGuard} from './core/guards/auth-guard.service';
 
 @Component({
 	selector: 'app-root',
@@ -8,6 +9,6 @@ import {Component} from '@angular/core';
 export class AppComponent {
 	title = 'FlickChat';
 
-	constructor() {
+	constructor(public authGuard: AuthGuard) {
 	}
 }

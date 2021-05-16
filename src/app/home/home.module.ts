@@ -4,13 +4,17 @@ import {HomeComponent} from './home.component';
 import {routing} from './home.routes';
 import {SharedModule} from '../shared/shared.module';
 import {ProfileViewComponent} from './profile-view/profile-view.component';
-import { IconActionsComponent } from './icon-actions/icon-actions.component';
+import {IconActionsComponent} from './icon-actions/icon-actions.component';
+import {ChatsComponent} from './chats/chats.component';
+import { ChatItemComponent } from './chats/chat-item/chat-item.component';
 
 @NgModule({
 	declarations: [
 		HomeComponent,
 		ProfileViewComponent,
-  IconActionsComponent,
+		IconActionsComponent,
+		ChatsComponent,
+  ChatItemComponent,
 	],
 	imports: [
 		routing,

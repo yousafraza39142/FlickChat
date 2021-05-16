@@ -1,4 +1,4 @@
 <div class="profile-section">
-	<div class="image-section" [class.online]="isOnline" [ngStyle]="{'background-image': 'url(' + this.imageUrl + ')'}"></div>
+	<app-profile-image [online]="isOnline" [imageUrl]="imageUrl"></app-profile-image>
 	<div class="name-section">{{userName}}</div>
 </div>

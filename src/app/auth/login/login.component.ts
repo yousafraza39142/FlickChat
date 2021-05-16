@@ -61,4 +61,16 @@ export class LoginComponent implements OnInit {
 			}
 		);
 	}
+
+
+	public facebookSignIn(): void {
+		this.userService.loginWithFacebook().subscribe(
+			value => {
+				console.log(value);
+				if (value.user) {
+					this.router.navigate(['home']);
+				}
+			}
+		);
+	}
 }

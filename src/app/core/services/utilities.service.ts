@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {MatSnackBar, MatSnackBarConfig, MatSnackBarRef} from '@angular/material/snack-bar';
 import {Observable, of} from 'rxjs';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 
 @Injectable({
 	providedIn: 'root'
@@ -8,7 +9,10 @@ import {Observable, of} from 'rxjs';
 export class UtilitiesService {
 
 
-	constructor(private _snackBar: MatSnackBar) {
+	public isHandSet$ = this.breakPoints.observe(Breakpoints.Handset);
+
+	constructor(private _snackBar: MatSnackBar,
+				private breakPoints: BreakpointObserver,) {
 	}
 
 	openSnackBar(message: string, action: string = null): MatSnackBarRef<any> {
