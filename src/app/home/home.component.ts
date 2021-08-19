@@ -52,12 +52,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 	}
 
 
-	private navigateToAuth(): void {
-		this.router.navigate(['auth']);
+	iconActions($event: SideNavActions) {
+		console.log($event);
 	}
 
 
-	iconActions($event: SideNavActions) {
-		console.log($event);
+	private navigateToAuth(): void {
+		this.router.navigate(['auth']);
 	}
 }

@@ -51,17 +51,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 	}
 
 
-	private clearValues(): void {
-		this.loginForm.reset();
-	}
-
-
-	private clearErrors(): void {
-		this.email.setErrors(null);
-		this.password.setErrors(null);
-	}
-
-
 	public googleSignIn(): void {
 		this.subs.add(
 			this.userService.loginWithGoogle().subscribe(
@@ -86,5 +75,16 @@ export class LoginComponent implements OnInit, OnDestroy {
 				}
 			)
 		);
+	}
+
+
+	private clearValues(): void {
+		this.loginForm.reset();
+	}
+
+
+	private clearErrors(): void {
+		this.email.setErrors(null);
+		this.password.setErrors(null);
 	}
 }

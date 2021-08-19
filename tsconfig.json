@@ -18,12 +18,12 @@
 		],
 		"paths": {
 			"@app/*": [
-				"src/app/*"
+				"./src/app/*"
 			],
 			"@env/*": [
-				"src/environments/*"
+				"./src/environments/*"
 			]
-		}
+		},
 	},
 	"angularCompilerOptions": {
 		"enableI18nLegacyMessageIdFormat": false

@@ -7,8 +7,8 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class ProfileImageComponent implements OnInit {
 
-	@Input() imageUrl: string  = null;
-	@Input() online  : boolean = false;
+	@Input() imageUrl : string  = null;
+	@Input() online   : boolean = false;
 
 	constructor() {
 	}

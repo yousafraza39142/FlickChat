@@ -6,7 +6,7 @@ import {LayoutModule} from '@angular/cdk/layout';
 
 const COMPONENTS = [
 	ProfileImageComponent,
-]
+];
 
 @NgModule({
 	declarations: [
