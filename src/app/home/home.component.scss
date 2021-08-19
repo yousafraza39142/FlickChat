@@ -16,8 +16,9 @@
 }
 
 .app-sidenav-content {
-
-	background: #E5E5FE;
+	display: grid;
+	grid-template-rows: auto 1fr;
+	background: $color-text-white;
 
 	.side-nav-container {
 		display: flex;
@@ -48,23 +49,30 @@ app-chats {
 	margin-top: 20px;
 }
 
-.sticky-container {
-	//background: $color-primary;
-	background: $color-charcoal;
-	z-index: 100;
-	position: -webkit-sticky;
-	position: sticky;
-	top: 0;
+.mat-drawer-wrapper {
+	width: 100%;
+
+	.sticky-container {
+		//background: $color-primary;
+		background: linear-gradient(180deg, $color-charcoal 96%, transparent 100%);
+		z-index: 100;
+		position: -webkit-sticky;
+		position: sticky;
+		top: 0;
+	}
 }
+
 
 mat-toolbar {
 	//background: $color-primary;
-	padding: 60px 60px;
+	padding: 60px 30px 60px 60px;
 	color: $color-charcoal;
 
 	.hamburger-btn {
 		position: absolute;
 		left: 10px;
+		background: transparent;
+		color: $color-charcoal;
 	}
 
 	.name {
@@ -83,7 +91,7 @@ mat-toolbar {
 	}
 
 	.options {
-		font-size: 16px;
+		font-size: 14px;
 		padding: 0;
 		list-style: none;
 		display: flex;
@@ -101,14 +109,34 @@ mat-toolbar {
 
 			&:not(:last-child) {
 				color: $color-gray;
+
+				&:hover {
+					color: $color-charcoal;
+				}
 			}
 
-			&:not(:first-child):before {
+			&:not(:last-child):after {
 				content: '|';
 				position: absolute;
-				left: -10px;
+				right: -10px;
 				color: $color-gray;
 			}
+
+			&:last-child:hover {
+				transform: rotate(30deg);
+				transform-origin: center center;
+			}
+		}
+	}
+}
+
+
+@media(min-width: 768px) {
+	mat-toolbar {
+		padding: 60px 60px;
+
+		.options li {
+			font-size: 16px;
 		}
 	}
 }

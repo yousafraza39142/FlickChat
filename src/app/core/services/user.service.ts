@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
+import {AngularFireDatabase} from '@angular/fire/database';
 import {from, Observable} from 'rxjs';
 import firebase from 'firebase';
 import UserCredential = firebase.auth.UserCredential;
@@ -15,7 +16,7 @@ import FacebookAuthProvider = firebase.auth.FacebookAuthProvider;
 export class UserService {
 
 
-	constructor(public auth: AngularFireAuth, private router: Router) {
+	constructor(public auth: AngularFireAuth, private db: AngularFireDatabase, private router: Router) {
 	}
 
 
@@ -44,12 +45,21 @@ export class UserService {
 	}
 
 
-	getUser(): Observable<User> {
+	selectUser(): Observable<User> {
 		return this.auth.user;
 	}
 
 
-	isLoggedIn(): Observable<boolean> {
+	selectIsLoggedIn(): Observable<boolean> {
 		return this.auth.user.pipe(map(user => !!user?.uid));
+	}
+
+
+	createUserEntry(user: firebase.User): void {
+		if (!user) return;
+
+		this.db.database.ref('Users').child(user.uid).set(user.displayName).then(res => {
+			console.log(res);
+		});
 	}
 }

@@ -1,18 +1,19 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {UserService} from '../../core/services/user.service';
+import {Subscription} from 'rxjs';
 
 @Component({
 	selector: 'app-login',
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
 	// Form Controls with validators
-	email = new FormControl('', [Validators.email, Validators.required]);
-	password = new FormControl('', [Validators.required, Validators.minLength(8)]);
+	email        = new FormControl('', [Validators.email, Validators.required]);
+	password     = new FormControl('', [Validators.required, Validators.minLength(8)]);
 	keepLoggedIn = new FormControl(false);
 
 	// Form
@@ -22,15 +23,25 @@ export class LoginComponent implements OnInit {
 		keepLoggedIn: this.keepLoggedIn,
 	}, {updateOn: 'blur'});
 
+	readonly subs: Subscription = new Subscription();
 
 	constructor(private router: Router, private userService: UserService) {
-		this.userService.auth.authState.subscribe( isAuthenticated => {
-			if (isAuthenticated) this.router.navigate(['home']);
-		})
+		this.subs.add(
+			this.userService.auth.authState.subscribe(isAuthenticated => {
+				if (isAuthenticated) {
+					this.router.navigate(['home']);
+				}
+			})
+		);
 	}
 
 
 	ngOnInit(): void {
+	}
+
+
+	ngOnDestroy(): void {
+		this.subs.unsubscribe();
 	}
 
 
@@ -52,25 +63,28 @@ export class LoginComponent implements OnInit {
 
 
 	public googleSignIn(): void {
-		this.userService.loginWithGoogle().subscribe(
-			value => {
-				console.log(value);
-				if (value.user) {
-					this.router.navigate(['home']);
+		this.subs.add(
+			this.userService.loginWithGoogle().subscribe(
+				value => {
+					if (value?.user) {
+						this.router.navigate(['home']);
+					}
 				}
-			}
+			)
 		);
 	}
 
 
 	public facebookSignIn(): void {
-		this.userService.loginWithFacebook().subscribe(
-			value => {
-				console.log(value);
-				if (value.user) {
-					this.router.navigate(['home']);
+		this.subs.add(
+			this.userService.loginWithFacebook().subscribe(
+				value => {
+					console.log(value);
+					if (value.user) {
+						this.router.navigate(['home']);
+					}
 				}
-			}
+			)
 		);
 	}
 }

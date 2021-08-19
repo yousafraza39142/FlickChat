@@ -14,13 +14,7 @@
 <body class="mat-typography">
 <app-root>
 	<div class="root-container" id="index-root-loader">
-		<div class="loading-container">
-			<img src="/assets/images/logo-index.png" alt="Portal" class="logo"/>
-			<br/>
-			<div class="meter"><span style="width: 100%" id="progress-status"></span></div>
-			<div class="text">Loading our web app. Updating now will make for super fast page loads in a few moments!
-			</div>
-		</div>
+		<img src="/assets/images/logo-dark.png" alt="Flick Chat" class="logo"/>
 	</div>
 	<style>
 		html, body, .app-root {
@@ -28,8 +22,7 @@
 		}
 
 		body {
-			background: #3A3A3A;
-			color: #808080;
+			background: whitesmoke;
 			font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 			font-display: fallback;
 			font-size: 14px;
@@ -44,96 +37,19 @@
 		}
 
 		.logo {
+			width: 30%;
 			max-width: 100%;
-			margin-bottom: 25px;
+			min-width: 250px;
+			animation: 1s spin-loading ease-in-out alternate infinite;
 		}
 
-		.loading-container {
-			width: 280px;
-			padding: 10px 0;
-			margin: auto;
-			text-align: center;
-			position: relative;
-			top: -50px; /* Pull it higher away from center */
-		}
-
-		.text {
-			font-size: 13px;
-			line-height: 1.7;
-		}
-
-		.meter {
-			height: 7px;
-			position: relative;
-			background: transparent;
-			border-radius: 50px;
-			box-shadow: inset 0 0 0 1px #979797;
-			margin-bottom: 18px;
-			overflow: hidden;
-		}
-
-		.meter > span {
-			display: block;
-			height: 100%;
-			border-radius: 50px;
-			background-color: #F05622;
-			position: relative;
-		}
-
-		.meter > span.transition {
-			transition: width 0.2s linear;
+		@keyframes spin-loading {
+			100% {
+				transform: scale(1.3);
+			}
 		}
 	</style>
-	<script>
-		try {
-			var step = 1000;  // Milliseconds of each step
-			var counter = 0;
-			var interval;
 
-			// Increment progress bar
-			function incrementStep() {
-				var root = document.getElementById('index-root-loader');
-				if (!root) {
-					// Application loaded - clear interval
-					clearInterval(interval);
-					return;
-				}
-
-				var element = document.getElementById('progress-status');
-				var calc = counter * step / 100;
-				element.style.width = calc + '%';
-
-				if (calc >= 100) {
-					// 100% done
-					clearInterval(interval);
-
-					// Wait for 4 seconds and restart the animation
-					setTimeout(function () {
-						counter = 0;
-						startAnimation();
-					}, 6000);
-				}
-				counter++;
-
-				// Add transition class if not exists already
-				if (!element.className.match(/\btransition\b/)) {
-					setTimeout(function () {
-						element.className = "transition";
-					}, 1);
-				}
-			}
-
-			function startAnimation() {
-				interval = setInterval(incrementStep, step);
-			}
-
-			// Start animation after a delay - so 100% progress is shown in case if application files are already in cache
-			setTimeout(startAnimation, 500);
-		} catch (e) {
-			console.log('Some error in index loading animation');
-			console.log('Exception: ', e);
-		}
-	</script>
 </app-root>
 </body>
 </html>

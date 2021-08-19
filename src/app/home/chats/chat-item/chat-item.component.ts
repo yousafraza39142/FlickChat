@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-chat-item',
@@ -6,6 +6,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./chat-item.component.scss']
 })
 export class ChatItemComponent implements OnInit {
+
+	@Input() name       : string = 'demo';
+	@Input() lastSeen   : string = '8 mins ago';
+	@Input() lastMessage: string = 'Hey, this is the test last message, it is supposed to be a long message';
 
   constructor() { }
 

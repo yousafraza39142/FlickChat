@@ -1,30 +1,34 @@
 <mat-drawer-container class="app-container" autosize>
-	<mat-drawer #drawer class="app-sidenav container"
-				[mode]="!!(isHandSet$ | async).matches ? 'over' : 'side'"
-				[opened]="!(isHandSet$ | async)?.matches"
+	<mat-drawer #drawer class="app-sidenav container mat-elevation-z2"
+				[mode]="!!(isDesktop$ | async).matches ? 'side' : 'over'"
+				[opened]="(isDesktop$ | async)?.matches"
 	>
-		<div class="sticky-container">
-			<app-profile-view
-				[imageUrl]="user?.photoURL"
-				[userName]="user?.displayName"
-			></app-profile-view>
-			<app-icon-actions #actions (eventAction)="iconActions($event)"></app-icon-actions>
+		<div class="mat-drawer-wrapper">
+			<div class="sticky-container">
+				<app-profile-view
+					[imageUrl]="user?.photoURL"
+					[userName]="user?.displayName"
+				></app-profile-view>
+				<app-icon-actions #actions (eventAction)="iconActions($event)"></app-icon-actions>
+			</div>
+
+			<app-chats *ngIf="actions.currentAction == Actions.CHATS"></app-chats>
+
+			<ng-container *ngIf="actions.currentAction == Actions.SETTINGS">
+				<button (click)="logout()">Logout</button>
+			</ng-container>
+			<ng-container *ngIf="actions.currentAction == Actions.CONTACTS">
+				Contacts
+			</ng-container>
 		</div>
-
-		<app-chats *ngIf="actions.currentAction == Actions.CHATS"></app-chats>
-
-		<ng-container *ngIf="actions.currentAction == Actions.SETTINGS">
-			<button (click)="logout()">Logout</button>
-		</ng-container>
-		<ng-container *ngIf="actions.currentAction == Actions.CONTACTS">
-			Contacts
-		</ng-container>
 	</mat-drawer>
 
 	<mat-drawer-content class="app-sidenav-content">
-		<mat-toolbar>
-			<button *ngIf="(isHandSet$ | async).matches" mat-mini-fab color="primary" class="hamburger-btn" (click)="drawer.toggle()">
-				<mat-icon> menu</mat-icon>
+		<mat-toolbar class="mat-elevation-z2">
+			<button disableRipple *ngIf="!(isDesktop$ | async).matches" mat-mini-fab
+					class="hamburger-btn mat-elevation-z0"
+					(click)="drawer.toggle()">
+				<mat-icon>menu</mat-icon>
 			</button>
 			<app-profile-image class="border-dark" [imageUrl]="user?.photoURL" [online]="true"></app-profile-image>
 			<div class="name">
@@ -35,12 +39,18 @@
 			<ul class="options">
 				<li class="item">participants</li>
 				<li class="item">Invite</li>
-				<li class="item"><i class="fas fa-cog"></i></li>
+				<li class="item" [matMenuTriggerFor]="settingsMenu"><i class="fas fa-cog"></i></li>
 			</ul>
 		</mat-toolbar>
 		<div class="side-nav-container">
 
-<!--			<h1>IN-Production X_X</h1>-->
+			<!--<h1>IN-Production X_X</h1>
+			<pre>{{user | json}}</pre>-->
 		</div>
 	</mat-drawer-content>
 </mat-drawer-container>
+
+
+<mat-menu #settingsMenu>
+	<button mat-menu-item (click)="logout()">Logout</button>
+</mat-menu>

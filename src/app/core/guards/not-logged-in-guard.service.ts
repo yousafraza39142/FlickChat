@@ -28,7 +28,7 @@ export class NotLoggedInGuard implements CanActivate {
 	}
 
 	private canI(): Observable<boolean | UrlTree> {
-		return this.userService.isLoggedIn().pipe(take(1),map(isLoggedIn => {
+		return this.userService.selectIsLoggedIn().pipe(take(1),map(isLoggedIn => {
 			if (!isLoggedIn) {
 				return true;
 			}

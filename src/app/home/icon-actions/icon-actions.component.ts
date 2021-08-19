@@ -1,5 +1,5 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {Actions} from 'src/app/shared/models';
+import {SideNavActions} from 'src/app/shared/models';
 
 @Component({
 	selector: 'app-icon-actions',
@@ -8,14 +8,14 @@ import {Actions} from 'src/app/shared/models';
 })
 export class IconActionsComponent implements OnInit {
 
-	@Output() eventAction = new EventEmitter<Actions>();
+	@Output() eventAction = new EventEmitter<SideNavActions>();
 
-	Actions       = Actions;
+	Actions       = SideNavActions;
 
 	/**
 	 * Internal state of current action clicked, can also be used from reference in template
 	 */
-	currentAction = Actions.CHATS;
+	currentAction = SideNavActions.CHATS;
 
 	constructor() {
 	}
@@ -25,7 +25,7 @@ export class IconActionsComponent implements OnInit {
 	}
 
 
-	action(action: Actions) {
+	action(action: SideNavActions) {
 		this.currentAction = action;
 		this.eventAction.emit(action);
 	}

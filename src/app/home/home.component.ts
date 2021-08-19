@@ -1,10 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {UserService} from '../core/services/user.service';
+import {UserService} from '@app/core/services/user.service';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
-import {Actions} from '../shared/models';
-import {UtilitiesService} from '../core/services/utilities.service';
-import {share} from 'rxjs/operators';
+import {SideNavActions} from '@app/shared/models';
+import {UtilitiesService} from '@app/core/services/utilities.service';
 import firebase from 'firebase';
 
 @Component({
@@ -15,10 +14,10 @@ import firebase from 'firebase';
 export class HomeComponent implements OnInit, OnDestroy {
 
 	NavDefaultState = true;
-	Actions         = Actions;
-	isHandSet$      = this.utils.isHandSet$;
+	Actions = SideNavActions;
+	isDesktop$ = this.utils.isDesktop$;
 
-	user : firebase.User = null;
+	user: firebase.User = null;
 
 
 	private subs: Subscription = new Subscription();
@@ -28,10 +27,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 				private utils: UtilitiesService
 	) {
 		this.subs.add(
-			this.userService.getUser().subscribe(user => {
+			this.userService.selectUser().subscribe(user => {
 				this.user = user;
+				this.userService.createUserEntry(null);
 			})
 		);
+
 	}
 
 
@@ -56,7 +57,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 	}
 
 
-	iconActions($event: Actions) {
+	iconActions($event: SideNavActions) {
 		console.log($event);
 	}
 }

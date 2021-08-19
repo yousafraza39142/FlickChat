@@ -40,7 +40,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 
 	private canActivateAnything(): Observable<boolean | UrlTree> {
 		this.loader$.next(true);
-		return this.userService.isLoggedIn().pipe(take(1),map(isLoggedIn => {
+		return this.userService.selectIsLoggedIn().pipe(take(1),map(isLoggedIn => {
 			this.loader$.next(false);
 
 			if (isLoggedIn) {
