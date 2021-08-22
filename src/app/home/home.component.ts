@@ -1,16 +1,16 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {UserService} from '@app/core/services/user.service';
-import {Subscription} from 'rxjs';
-import {Router} from '@angular/router';
-import {SideNavActions} from '@app/shared/models';
-import {UtilitiesService} from '@app/core/services/utilities.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { UserService } from '../core/services/user.service';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+import { SideNavActions } from '../shared/models';
+import { UtilitiesService } from '../core/services/utilities.service';
 import firebase from 'firebase';
 
-@Component({
+@Component( {
 	selector: 'app-home',
 	templateUrl: './home.component.html',
-	styleUrls: ['./home.component.scss']
-})
+	styleUrls: [ './home.component.scss' ]
+} )
 export class HomeComponent implements OnInit, OnDestroy {
 
 	NavDefaultState = true;
@@ -22,15 +22,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 	private subs: Subscription = new Subscription();
 
-	constructor(public userService: UserService,
-				private router: Router,
-				private utils: UtilitiesService
+
+	constructor( public userService: UserService,
+				 private router: Router,
+				 private utils: UtilitiesService
 	) {
 		this.subs.add(
-			this.userService.selectUser().subscribe(user => {
+			this.userService.selectUser().subscribe( user => {
 				this.user = user;
-				this.userService.createUserEntry(null);
-			})
+				this.userService.createUserEntry( null );
+			} )
 		);
 
 	}
@@ -46,18 +47,18 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
 	logout(): void {
-		this.userService.logout().subscribe(value => {
+		this.userService.logout().subscribe( value => {
 			this.navigateToAuth();
-		});
+		} );
 	}
 
 
-	iconActions($event: SideNavActions) {
-		console.log($event);
+	iconActions( $event: SideNavActions ) {
+		console.log( $event );
 	}
 
 
 	private navigateToAuth(): void {
-		this.router.navigate(['auth']);
+		this.router.navigate( [ 'auth' ] );
 	}
 }

@@ -11,6 +11,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatBadgeModule} from '@angular/material/badge';
+import {MatDividerModule} from '@angular/material/divider';
 
 const MODULES = [
 	MatInputModule,
@@ -25,6 +26,7 @@ const MODULES = [
 	MatProgressBarModule,
 	MatTooltipModule,
 	MatBadgeModule,
+	MatDividerModule,
 
 ];
 

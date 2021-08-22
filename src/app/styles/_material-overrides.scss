@@ -1,0 +1,43 @@
+@import '../../../node_modules/@angular/material/theming';
+
+
+// global material styles
+mat-form-field {
+  width: 100%;
+
+  &.ng-invalid.ng-touched {
+    margin-bottom: 10px;
+  }
+}
+
+
+// Mat-buttons
+button.mat-google-btn {
+  background-color: green;
+  color: #fff;
+}
+
+
+// Mat-menu-item changes
+.mat-menu-panel {
+	min-height: auto !important;
+	.mat-menu-content {
+
+		.mat-menu-item {
+			padding: 0 24px;
+			height: 32px;
+			line-height: 1;
+			font-size: inherit;
+		}
+
+		mat-divider {
+			margin: 9px 0;
+		}
+
+		.item-selected {
+			position: absolute;
+			right: 18px;
+			margin-top: 1px;
+		}
+	}
+}
