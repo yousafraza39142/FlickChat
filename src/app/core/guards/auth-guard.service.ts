@@ -13,9 +13,6 @@ import {loggedIn} from '@angular/fire/auth-guard';
 })
 export class AuthGuard implements CanActivate, CanActivateChild {
 
-	// Used when guard is fetching state from server to show loading
-	public loader$ = new BehaviorSubject<boolean>(false);
-
 	constructor(
 		private userService: UserService,
 		private router: Router,
@@ -39,9 +36,9 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 
 
 	private canActivateAnything(): Observable<boolean | UrlTree> {
-		this.loader$.next(true);
+		this.userService.loader$.next(true);
 		return this.userService.selectIsLoggedIn().pipe(take(1),map(isLoggedIn => {
-			this.loader$.next(false);
+			this.userService.loader$.next(false);
 
 			if (isLoggedIn) {
 				return true;

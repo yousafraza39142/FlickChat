@@ -2,94 +2,127 @@
 @import "src/app/styles/main";
 
 mat-card {
-  padding: 30px 30px;
-  height: 100%;
+	padding: 30px 30px;
+	min-height: 100%;
+	position: relative;
 
-  &:hover {
-    @include mat-elevation(5);
-  }
-}
-
-mat-card-footer {
-  padding-left: 16px;
-  padding-bottom: 16px;
-}
-
-mat-card-actions {
-  padding-top: 30px;
-  button {
-    width: 100%;
-
-    &:not(:nth-child(1)) {
-      margin-top: 10px;
-    }
-  }
-
-  .sign-up-subtext {
-    color: $color-grey;
-    text-align: center;
-    margin-top: 10px;
-    font-size: 12px;
-    cursor: default;
-    span {
-      //color: $color-light-grey;
-      color: map.get($mat-indigo, A700);
-      cursor: pointer;
-    }
-  }
-}
-
-mat-error {
-  margin-bottom: 5px;
-}
-
-button.sign-in-google-btn {
-  width: 90%;
-  display: block;
-  margin: auto;
-}
-
-.sign-up-providers {
-	text-align: center;
-	.fa-google {
-		background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
-		-webkit-background-clip: text;
-		background-clip: text;
-		color: transparent;
-		-webkit-text-fill-color: transparent;
+	.stick-top {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
 	}
 
-	.fa-facebook {
-		color: rgb(66, 103, 178);
-	}
+	.loading-cover {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 2;
+		background: rgba(255, 255, 255, 0.50);
 
-	.providers {
-		margin-top: 10px;
-		i + i {
-			margin-left: 20px;
+		.cancel-btn {
+			display: block;
+			margin-left: auto;
+			margin-top: 10px;
 		}
-		i {
-			cursor: pointer;
-			font-size: 48px;
+	}
 
-			&:hover {
-				transform: scale(1.1);
+	mat-card-content {}
 
+	mat-card-footer {
+		padding-left: 16px;
+		padding-bottom: 16px;
+	}
+
+	mat-card-actions {
+		padding-top: 30px;
+
+		button {
+			width: 100%;
+
+			&:not(:nth-child(1)) {
+				margin-top: 10px;
+			}
+		}
+
+		.sign-up-subtext {
+			color: $color-grey;
+			text-align: center;
+			margin-top: 10px;
+			font-size: 12px;
+			cursor: default;
+
+			span {
+				//color: $color-light-grey;
+				color: map.get($mat-indigo, A700);
+				cursor: pointer;
 			}
 		}
 	}
+
+	mat-error {
+		margin-bottom: 5px;
+	}
+
+	button.sign-in-google-btn {
+		width: 90%;
+		display: block;
+		margin: auto;
+	}
+
+	.sign-up-providers {
+		text-align: center;
+
+		.fa-google {
+			background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
+			-webkit-background-clip: text;
+			background-clip: text;
+			color: transparent;
+			-webkit-text-fill-color: transparent;
+		}
+
+		.fa-facebook {
+			color: rgb(66, 103, 178);
+		}
+
+		.providers {
+			margin-top: 10px;
+
+			i + i {
+				margin-left: 20px;
+			}
+
+			i {
+				cursor: pointer;
+				font-size: 48px;
+
+				&:hover {
+					transform: scale(1.1);
+
+				}
+			}
+		}
+	}
+
+	&:hover {
+		@include mat-elevation(5);
+	}
 }
 
-@media (min-width:768px) {
-  :host {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+@media (min-width: 768px) {
+	:host {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
 
-  mat-card {
-    margin-top: 100px;
-    min-width: 400px;
-    height: auto;
-  }
+	mat-card {
+		margin-top: 50px;
+		min-width: 400px;
+		max-width: 500px;
+		margin-bottom: 100px;
+		min-height: auto;
+	}
 }

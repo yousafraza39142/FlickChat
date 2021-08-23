@@ -1,0 +1,7 @@
+<div class="profile-pic"
+	 [ngStyle]="overrides"
+	 (click)="filePicker.click()">
+	<div class="hover-shade"></div>
+</div>
+<input [disabled]="disabled" #filePicker type="file" (change)="onFileUpload(filePicker.files[0])" accept="image/png, image/gif, image/jpeg"
+	   class="hidden-xs hidden-sm hidden-md hidden-lg hidden-xl" />

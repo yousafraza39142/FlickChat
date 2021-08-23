@@ -30,7 +30,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 		this.subs.add(
 			this.userService.selectUser().subscribe( user => {
 				this.user = user;
-				this.userService.createUserEntry( null );
 			} )
 		);
 

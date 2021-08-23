@@ -1,4 +1,4 @@
-<ng-container *ngIf="authGuard.loader$ | async">
+<ng-container *ngIf="userService.loader$ | async">
 	<mat-progress-bar mode="indeterminate"></mat-progress-bar>
 	<div class="root-container">
 		<img src="/assets/images/logo-dark.png" alt="Flick Chat" class="logo"/>

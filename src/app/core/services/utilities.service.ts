@@ -1,29 +1,32 @@
-import {Injectable} from '@angular/core';
-import {MatSnackBar, MatSnackBarRef} from '@angular/material/snack-bar';
-import {Observable, of} from 'rxjs';
-import {BreakpointObserver} from '@angular/cdk/layout';
-import {AppBreakPoints} from '../../shared/models';
+import { Injectable } from '@angular/core';
+import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
+import { Observable, of } from 'rxjs';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { AppBreakPoints } from '../../shared/models';
 
 
-@Injectable({
+@Injectable( {
 	providedIn: 'root'
-})
+} )
 export class UtilitiesService {
 
 
-	public isDesktop$ = this.breakPoints.observe(AppBreakPoints.xs);
+	public isDesktop$ = this.breakPoints.observe( AppBreakPoints.xs );
 
-	constructor(private _snackBar: MatSnackBar,
-				private breakPoints: BreakpointObserver,) {
+
+	constructor( private _snackBar: MatSnackBar,
+				 private breakPoints: BreakpointObserver, ) {
 	}
 
-	openSnackBar(message: string, action: string = null): MatSnackBarRef<any> {
-		return this._snackBar.open(message, action, {duration: 1000});
+
+	openSnackBar( message: string, action: string = null, duration = 3000 ): MatSnackBarRef<any> {
+		return this._snackBar.open( message, action, { duration } );
 	}
 
-	catchErrorLog(r: any): Observable<boolean> {
+
+	catchErrorLog( r: any ): Observable<boolean> {
 		// TODO: Replace with own logger service in future
-		console.error('AUTH-GUARD', r);
-		return of(false);
+		console.error( 'AUTH-GUARD', r );
+		return of( false );
 	}
 }
