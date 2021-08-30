@@ -24,8 +24,25 @@
 
 	&:hover {
 		@include mat-elevation(2);
+
 		.hover-shade {
-			background: rgba(0,0,0,.3);
+
+			&::after {
+				content: '\f030';
+				font-family: 'Font Awesome 5 Free', sans-serif;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				color: white;
+				font-weight: bold;
+				font-size: 48px;
+				opacity: .6;
+				transform: translate(-50%, -50%);
+			}
+		}
+
+		.hover-shade {
+			background: rgba(0, 0, 0, .3);
 		}
 	}
 }

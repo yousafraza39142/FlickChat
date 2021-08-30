@@ -21,11 +21,6 @@ export enum LogLevel {
 	Off = 6
 }
 
-export enum AuthErrorCodes {
-	ALREADY_EXISTS = 'auth/account-exists-with-different-credential',
-	EMAIL_EXISTS = 'auth/email-already-exists',
-}
-
 
 export interface IUserModel {
 	uid: string;

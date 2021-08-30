@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserService } from '../core/services/user.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { SideNavActions } from '../shared/models';
+import { IUserModel, SideNavActions } from '../shared/models';
 import { UtilitiesService } from '../core/services/utilities.service';
 import firebase from 'firebase';
 
@@ -16,8 +16,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 	NavDefaultState = true;
 	Actions = SideNavActions;
 	isDesktop$ = this.utils.isDesktop$;
-
-	user: firebase.User = null;
+	user: IUserModel = null;
 
 
 	private subs: Subscription = new Subscription();
@@ -28,7 +27,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 				 private utils: UtilitiesService
 	) {
 		this.subs.add(
-			this.userService.selectUser().subscribe( user => {
+			this.userService.user$.subscribe( user => {
 				this.user = user;
 			} )
 		);

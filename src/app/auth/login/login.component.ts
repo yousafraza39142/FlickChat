@@ -3,15 +3,16 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
 import { PartialObserver, Subscription } from 'rxjs';
-import { AuthErrorCodes, IUserModel } from '../../shared/models';
+import { IUserModel } from '../../shared/models';
 import firebase from 'firebase';
 import { StaticService } from '../../core/static-services/static-service';
 import { defaultProfileImage } from '../../shared/constants';
 import { AngularFireUploadTask } from '@angular/fire/storage';
 import { UtilitiesService } from '../../core/services/utilities.service';
+import { AngularFireAuth } from '@angular/fire/auth';
 import UserCredential = firebase.auth.UserCredential;
 import AuthError = firebase.auth.AuthError;
-import User = firebase.User;
+import Persistence = firebase.auth.Auth.Persistence;
 
 
 enum LayoutOptions {
@@ -36,7 +37,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 	keepLoggedIn = new FormControl( false );
 
 	// eslint-disable-next-line max-len
-	photoUrl: string = 'https://firebasestorage.googleapis.com/v0/b/echat-172e0.appspot.com/o/dummy-profile-image.png?alt=media&token=867ac6c7-3331-4462-ab7a-3f8cb74a972a';
+	photoUrl: string = defaultProfileImage;
 	uploadTask: AngularFireUploadTask = null;
 
 	// Form
@@ -44,7 +45,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 		email: this.fc_email,
 		password: this.fc_password,
 		keepLoggedIn: this.keepLoggedIn,
-	}, { updateOn: 'blur' } );
+	} );
 
 	// Form
 	signUpForm = new FormGroup( {
@@ -52,13 +53,11 @@ export class LoginComponent implements OnInit, OnDestroy {
 		lastName: this.fc_lastName,
 		phoneNo: this.fc_phoneNo,
 		profilePhoto: this.fc_profilePhoto,
-		email: this.fc_email,
-		password: this.fc_password,
-	}, { updateOn: 'blur' } );
+	} );
 
 	// Layout
 	LayoutOptions = LayoutOptions;
-	layout: LayoutOptions = LayoutOptions.SignUp;
+	layout: LayoutOptions = LayoutOptions.SignIn;
 	showLoading = false;
 	percentageValue = 0;
 
@@ -68,8 +67,19 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 	constructor( private router: Router,
 				 private userService: UserService,
+				 private auth: AngularFireAuth,
 				 private utils: UtilitiesService,
 	) {
+	}
+
+
+	public googleSignIn(): void {
+		this.subs.add( this.userService.loginWithGoogle().subscribe( this.signInObserver ) );
+	}
+
+
+	public facebookSignIn(): void {
+		this.subs.add( this.userService.loginWithFacebook().subscribe( this.signInObserver ) );
 	}
 
 
@@ -89,11 +99,20 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 
 	changeLayout( layout: LayoutOptions ) {
+
+		if ( layout === LayoutOptions.SignUp ) {
+			this.signUpForm.addControl( 'email', this.fc_email );
+			this.signUpForm.addControl( 'password', this.fc_password );
+		} else {
+			this.signUpForm.removeControl( 'email' );
+			this.signUpForm.removeControl( 'password' );
+		}
+
 		this.layout = layout;
 	}
 
 
-	onFileRefReceived( url: string ) {
+	onImageUrlReceived( url: string ) {
 		this.photoUrl = url;
 	}
 
@@ -136,12 +155,24 @@ export class LoginComponent implements OnInit, OnDestroy {
 		this.subs.add(
 			this.userService.signUpEmailPassword( data?.email, data?.password ).subscribe( {
 				next: credentials => {
-					if ( credentials?.additionalUserInfo?.isNewUser ) {
-						const user = StaticService.getIUserModel( credentials?.user );
-						this.createUserEntry( credentials?.user );
-					}
+					const { firstName, lastName } = this.signUpForm.value;
+					const user: IUserModel = {
+						uid: credentials?.user?.uid,
+						email: credentials?.user?.email,
+						displayName: `${ firstName } ${ lastName }`,
+						photoURL: this.photoUrl,
+						status: `Hey there I'm using Flick Chat`,
+					};
+					this.subs.add(
+						this.userService.createUserEntry( user ).subscribe( val => {
+							this.userService.user$.next( user );
+							this.navigateHome();
+						} )
+					);
 				},
 				error: err => {
+					this.showLoading = true;
+					this.signUpForm.disable();
 					this.utils.openSnackBar( err?.message );
 				}
 			} )
@@ -149,63 +180,65 @@ export class LoginComponent implements OnInit, OnDestroy {
 	}
 
 
-	createUserEntry( { uid, email }: User ) {
-		const { firstName, lastName } = this.signUpForm.value;
-		const user: IUserModel = {
-			uid,
-			email,
-			displayName: `${ firstName } ${ lastName }`,
-			photoURL: this.photoUrl,
-			status: `Hey there I'm using Flick Chat`,
-		};
+	async login() {
+		const { email, password, keepLoggedIn } = this.loginForm.value;
+
+		if ( keepLoggedIn ) {
+			await this.auth.setPersistence( Persistence.LOCAL );
+		} else {
+			await this.auth.setPersistence( Persistence.SESSION );
+		}
+		this.showLoading = true;
+		this.loginForm.disable();
 		this.subs.add(
-			this.userService.createUserEntry(user).subscribe( () => {
-				this.router.navigate( [ 'home' ] );
-			})
+			this.userService.loginWithEmail( email, password ).subscribe( {
+				next: credentials => {
+					this.subs.add( this.userService.getUserEntry( credentials?.user?.uid ).subscribe( user => {
+						this.userService.user$.next( user.data() );
+						this.navigateHome();
+					} ) );
+				},
+				error: err => {
+					this.loginForm.enable();
+					this.showLoading = false;
+					this.utils.openSnackBar( err?.message );
+				}
+			} )
 		);
 	}
 
 
-	public googleSignIn(): void {
-		this.subs.add( this.userService.loginWithGoogle().subscribe( this.signInObserver ) );
+	private navigateHome() {
+		this.router.navigate( [ 'home' ] );
 	}
 
 
-	public facebookSignIn(): void {
-		this.subs.add( this.userService.loginWithFacebook().subscribe( this.signInObserver ) );
-	}
-
-
+	// Observer Used for google/fb sign in
 	private get signInObserver(): PartialObserver<UserCredential> {
 		return {
 			next: credentials => {
-				console.log( credentials );
-				if ( credentials?.user ) {
-					this.userService.loader$.next( true );
-					const user = StaticService.getIUserModel( credentials?.user );
+				const user = StaticService.getIUserModel( credentials?.user );
+				this.userService.loader$.next( true );
+
+				if ( credentials?.additionalUserInfo?.isNewUser ) {
 					this.subs.add( this.userService.createUserEntry( user ).subscribe( val => {
+						this.userService.user$.next( user );
 						this.userService.loader$.next( false );
-						this.router.navigate( [ 'home' ] );
+						this.navigateHome();
 					} ) );
+					return;
 				}
+
+				this.subs.add( this.userService.getUserEntry( user?.uid ).subscribe( IUser => {
+					this.userService.user$.next( IUser.data() );
+					this.userService.loader$.next( false );
+					this.navigateHome();
+				} ) );
 			},
 			error: ( error: AuthError ) => {
 				console.error( error?.message );
 			}
 		};
-	}
-
-
-	// TODO: CHECK IF NEEDED
-	private getAuthErrorMessage( code: AuthErrorCodes ): string {
-		switch ( code ) {
-			case AuthErrorCodes.EMAIL_EXISTS:
-				return 'Account Already exists with this email';
-			case AuthErrorCodes.ALREADY_EXISTS:
-				return 'Account Already exists with this email on different provider';
-			default:
-				return 'Sign In Error';
-		}
 	}
 
 

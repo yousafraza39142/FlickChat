@@ -1,16 +1,13 @@
-import {Injectable} from '@angular/core';
-import {CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router} from '@angular/router';
-import {Observable, of} from 'rxjs';
-import {AngularFireAuth} from '@angular/fire/auth';
-import {UserService} from '../services/user.service';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {UtilitiesService} from '../services/utilities.service';
-import {catchError, map, take, tap} from 'rxjs/operators';
-import {loggedIn} from '@angular/fire/auth-guard';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Observable } from 'rxjs';
+import { UserService } from '../services/user.service';
+import { UtilitiesService } from '../services/utilities.service';
+import { catchError, map, take } from 'rxjs/operators';
 
-@Injectable({
+@Injectable( {
 	providedIn: 'root'
-})
+} )
 export class NotLoggedInGuard implements CanActivate {
 
 	constructor(
@@ -23,18 +20,19 @@ export class NotLoggedInGuard implements CanActivate {
 
 	canActivate(
 		route: ActivatedRouteSnapshot,
-		state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-		return this.canI();
+		state: RouterStateSnapshot ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+		return this.canIActivate();
 	}
 
-	private canI(): Observable<boolean | UrlTree> {
-		return this.userService.selectIsLoggedIn().pipe(take(1),map(isLoggedIn => {
-			if (!isLoggedIn) {
+
+	private canIActivate(): Observable<boolean | UrlTree> {
+		return this.userService.selectIsLoggedIn().pipe( take( 1 ), map( isLoggedIn => {
+			if ( !isLoggedIn ) {
 				return true;
 			}
 
-			this.utils.openSnackBar('😓, Please Log out First.', null);
-			return this.router.parseUrl('home');
-		}), catchError(this.utils.catchErrorLog));
+			this.utils.openSnackBar( '😓, Please Log out First.', null );
+			return this.router.parseUrl( 'home' );
+		} ), catchError( this.utils.catchErrorLog ) );
 	}
 }

@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { BehaviorSubject, from, Observable } from 'rxjs';
+import { BehaviorSubject, from, Observable, of, Subscription } from 'rxjs';
 import firebase from 'firebase';
 import { Router } from '@angular/router';
-import { map } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { IUserModel } from '../../shared/models';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/storage';
@@ -15,10 +15,16 @@ import User = firebase.User;
 @Injectable( {
 	providedIn: 'root'
 } )
-export class UserService {
+export class UserService implements OnDestroy {
 
 	// Used when guard is fetching state from server to show loading
 	public loader$ = new BehaviorSubject<boolean>( false );
+
+	// Global User Object
+	public user$ = new BehaviorSubject<IUserModel>( null );
+
+	// Subscription
+	private subs = new Subscription();
 
 
 	constructor( public auth: AngularFireAuth,
@@ -26,6 +32,14 @@ export class UserService {
 				 private router: Router,
 				 private storage: AngularFireStorage,
 	) {
+		this.subs.add( this.auth.authState.pipe( switchMap( firebaseUser => {
+			if ( firebaseUser?.uid ) {
+				return this.getUserEntry( firebaseUser?.uid );
+			}
+			return of( null );
+		} ) ).subscribe( user => {
+			this.user$.next( user?.data() );
+		}) );
 	}
 
 
@@ -50,6 +64,7 @@ export class UserService {
 
 
 	logout(): Observable<void> {
+		this.user$.next( null );
 		return from( this.auth.signOut() );
 	}
 
@@ -60,12 +75,27 @@ export class UserService {
 
 
 	selectIsLoggedIn(): Observable<boolean> {
-		return this.auth.user.pipe( map( user => !!user?.uid ) );
+		return this.auth.user.pipe( switchMap( user => {
+			if ( user?.uid ) {
+				return this.getUserEntry( user?.uid ).pipe( tap( userRef => {
+					this.user$.next( userRef.data() );
+				} ) );
+			}
+			return of( null );
+		} ), map( user => !!user?.data()?.uid ) );
 	}
 
 
 	createUserEntry( user: IUserModel ): Observable<any> {
-		return from( this.firestore.firestore.collection( 'users' ).doc( user?.uid ).set( user, { merge: true } ) );
+		return from( this.firestore.collection( 'users' ).doc( user?.uid ).set( user, { merge: true } ) );
+	}
+
+
+	getUserEntry( uid: string ): Observable<firebase.firestore.DocumentSnapshot<IUserModel>> {
+		if ( !uid ) {
+			return of( null );
+		}
+		return this.firestore.collection( 'users' ).doc( uid ).get() as Observable<firebase.firestore.DocumentSnapshot<IUserModel>>;
 	}
 
 
@@ -74,7 +104,7 @@ export class UserService {
 	 *
 	 * @param file
 	 */
-	*uploadImage( file: File ): Generator<AngularFireUploadTask | AngularFireStorageReference> {
+	* uploadImage( file: File ): Generator<AngularFireUploadTask | AngularFireStorageReference> {
 		if ( !file ) {
 			return null;
 		}
@@ -85,5 +115,10 @@ export class UserService {
 		yield fileRef;
 
 		return this.storage.upload( filePath, file );
+	}
+
+
+	ngOnDestroy(): void {
+		this.subs?.unsubscribe();
 	}
 }

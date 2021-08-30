@@ -3,7 +3,6 @@
 		<mat-card-title>Login</mat-card-title>
 		<mat-card-subtitle>Enter the credentials</mat-card-subtitle>
 		<mat-card-content>
-
 			<mat-form-field>
 				<mat-label>Email/User Name</mat-label>
 				<input matInput placeholder="Email/User Name" [formControl]="fc_email" value="">
@@ -29,9 +28,8 @@
 			<mat-checkbox class="example-margin mat-small" [formControl]="keepLoggedIn">keep me logged in</mat-checkbox>
 		</mat-card-content>
 		<mat-card-actions align="right">
-			<button color="primary" mat-raised-button>Login</button>
-			<div class="sign-up-subtext">Don't have an account? <span (click)="changeLayout(LayoutOptions.SignUp);">Sign up</span>
-			</div>
+			<button color="primary" mat-raised-button (click)="login()">Login</button>
+			<div class="sign-up-subtext">Don't have an account? <span (click)="changeLayout(LayoutOptions.SignUp);">Sign up</span></div>
 		</mat-card-actions>
 		<mat-card-footer>
 			<div class="sign-up-providers">
@@ -39,7 +37,7 @@
 				<div class="providers">
 					<i (click)="googleSignIn()" class="fab fa-google"></i>
 					<i (click)="facebookSignIn()" class="fab fa-facebook"></i>
-					<i class="fab fa-github"></i>
+					<i class="fab fa-github" style="pointer-events: none; opacity: .5"></i>
 				</div>
 			</div>
 		</mat-card-footer>
@@ -58,7 +56,7 @@
 		<app-image-upload width="200" height="200"
 						  [imageUrl]="photoUrl"
 						  [disabled]="signUpForm.disabled"
-						  (eventPhotoUrl)="onFileRefReceived($event);"
+						  (eventPhotoUrl)="onImageUrlReceived($event);"
 						  (eventUploadTask)="onUploadTaskReceived($event)"
 		></app-image-upload>
 		<mat-card-content>
