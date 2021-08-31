@@ -13,6 +13,11 @@ export const environment = {
 		messagingSenderId: '608697183768',
 		appId: '1:608697183768:web:485415edf77a09a06d1d6d'
 	},
+	cometConfig: {
+		authKey: '81fa5105e027b49c9459446567424e9f7dbf51f1',
+		region: 'us',
+		appId: '192693051bd3e56c',
+	}
 };
 
 /*
