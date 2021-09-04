@@ -3,13 +3,12 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
 import { PartialObserver, Subscription } from 'rxjs';
-import { IUserModel } from '../../shared/models';
 import firebase from 'firebase';
-import { StaticService } from '../../core/static-services/static-service';
 import { defaultProfileImage } from '../../shared/constants';
 import { AngularFireUploadTask } from '@angular/fire/storage';
 import { UtilitiesService } from '../../core/services/utilities.service';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { tap } from 'rxjs/operators';
 import UserCredential = firebase.auth.UserCredential;
 import AuthError = firebase.auth.AuthError;
 import Persistence = firebase.auth.Auth.Persistence;
@@ -58,7 +57,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 	// Layout
 	LayoutOptions = LayoutOptions;
 	layout: LayoutOptions = LayoutOptions.SignIn;
-	showLoading = false;
+	loader = false;
 	percentageValue = 0;
 
 	// Subs
@@ -122,16 +121,16 @@ export class LoginComponent implements OnInit, OnDestroy {
 		this.subs.add(
 			uploadTask?.percentageChanges().subscribe( {
 				next: percentage => {
-					this.showLoading = true;
+					this.showLoader();
 					this.signUpForm.disable();
 					this.percentageValue = percentage;
 				},
 				complete: () => {
-					this.showLoading = false;
+					this.hideLoader();
 					this.signUpForm.enable();
 				},
 				error: err => {
-					this.showLoading = false;
+					this.hideLoader();
 					this.signUpForm.enable();
 					this.uploadTask = null;
 					this.utils.openSnackBar( err?.message, null, 3000 );
@@ -143,35 +142,25 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 	onCancelUpload() {
 		this.uploadTask?.cancel();
-		this.showLoading = false;
+		this.hideLoader();
 		this.signUpForm.enable();
 	}
 
 
 	signUp() {
 		const data = this.signUpForm.value;
-		this.showLoading = true;
+		this.showLoader();
 		this.signUpForm.disable();
 		this.subs.add(
-			this.userService.signUpEmailPassword( data?.email, data?.password ).subscribe( {
+			this.userService.signUpEmailPassword( data?.email, data?.password ).pipe( tap( credentials => {
+				this.updateSignedUpUser( credentials );
+			} ) ).subscribe( {
 				next: credentials => {
-					const { firstName, lastName } = this.signUpForm.value;
-					const user: IUserModel = {
-						uid: credentials?.user?.uid,
-						email: credentials?.user?.email,
-						displayName: `${ firstName } ${ lastName }`,
-						photoURL: this.photoUrl,
-						status: `Hey there I'm using Flick Chat`,
-					};
-					this.subs.add(
-						this.userService.createUserEntry( user ).subscribe( val => {
-							this.userService.user$.next( user );
-							this.navigateHome();
-						} )
-					);
+					this.navigateHome();
+					this.hideLoader();
 				},
 				error: err => {
-					this.showLoading = true;
+					this.showLoader();
 					this.signUpForm.disable();
 					this.utils.openSnackBar( err?.message );
 				}
@@ -183,28 +172,50 @@ export class LoginComponent implements OnInit, OnDestroy {
 	async login() {
 		const { email, password, keepLoggedIn } = this.loginForm.value;
 
+		// wait before persistence is set
+		await this.setPersistenceBeforeLogin( keepLoggedIn );
+
+		this.showLoader();
+		this.loginForm.disable();
+		this.subs.add(
+			this.userService.loginWithEmail( email, password ).subscribe( {
+				next: credentials => {
+					this.navigateHome();
+				},
+				error: err => {
+					this.loginForm.enable();
+					this.hideLoader();
+					this.utils.openSnackBar( err?.message );
+				}
+			} )
+		);
+	}
+
+
+	private updateSignedUpUser( credentials: firebase.auth.UserCredential ) {
+		const { firstName, lastName } = this.signUpForm.value;
+		if ( credentials?.user ) {
+			credentials.user.updateProfile( { displayName: `${ firstName } ${ lastName }`, photoURL: this.photoUrl, } );
+		}
+	}
+
+
+	private showLoader() {
+		this.loader = true;
+	}
+
+
+	private hideLoader() {
+		this.loader = false;
+	}
+
+
+	private async setPersistenceBeforeLogin( keepLoggedIn ) {
 		if ( keepLoggedIn ) {
 			await this.auth.setPersistence( Persistence.LOCAL );
 		} else {
 			await this.auth.setPersistence( Persistence.SESSION );
 		}
-		this.showLoading = true;
-		this.loginForm.disable();
-		this.subs.add(
-			this.userService.loginWithEmail( email, password ).subscribe( {
-				next: credentials => {
-					this.subs.add( this.userService.getUserEntry( credentials?.user?.uid ).subscribe( user => {
-						this.userService.user$.next( user.data() );
-						this.navigateHome();
-					} ) );
-				},
-				error: err => {
-					this.loginForm.enable();
-					this.showLoading = false;
-					this.utils.openSnackBar( err?.message );
-				}
-			} )
-		);
 	}
 
 
@@ -216,24 +227,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 	// Observer Used for google/fb sign in
 	private get signInObserver(): PartialObserver<UserCredential> {
 		return {
-			next: credentials => {
-				const user = StaticService.getIUserModel( credentials?.user );
-				this.userService.loader$.next( true );
-
-				if ( credentials?.additionalUserInfo?.isNewUser ) {
-					this.subs.add( this.userService.createUserEntry( user ).subscribe( val => {
-						this.userService.user$.next( user );
-						this.userService.loader$.next( false );
-						this.navigateHome();
-					} ) );
-					return;
-				}
-
-				this.subs.add( this.userService.getUserEntry( user?.uid ).subscribe( IUser => {
-					this.userService.user$.next( IUser.data() );
-					this.userService.loader$.next( false );
-					this.navigateHome();
-				} ) );
+			next: () => {
+				this.userService.loader$.next( false );
+				this.navigateHome();
 			},
 			error: ( error: AuthError ) => {
 				console.error( error?.message );

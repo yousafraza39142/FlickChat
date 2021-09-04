@@ -20,13 +20,3 @@ export enum LogLevel {
 	Fatal = 5,
 	Off = 6
 }
-
-
-export interface IUserModel {
-	uid: string;
-	displayName: string;
-	email: string;
-	status: string;
-	phoneNumber?:string;
-	photoURL: string;
-}

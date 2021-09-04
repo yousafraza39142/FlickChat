@@ -1,10 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { BehaviorSubject, from, Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, from, Observable, Subscription } from 'rxjs';
 import firebase from 'firebase';
 import { Router } from '@angular/router';
-import { map, switchMap, tap } from 'rxjs/operators';
-import { IUserModel } from '../../shared/models';
+import { map } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from '@angular/fire/storage';
 import UserCredential = firebase.auth.UserCredential;
@@ -20,9 +19,6 @@ export class UserService implements OnDestroy {
 	// Used when guard is fetching state from server to show loading
 	public loader$ = new BehaviorSubject<boolean>( false );
 
-	// Global User Object
-	public user$ = new BehaviorSubject<IUserModel>( null );
-
 	// Subscription
 	private subs = new Subscription();
 
@@ -32,14 +28,6 @@ export class UserService implements OnDestroy {
 				 private router: Router,
 				 private storage: AngularFireStorage,
 	) {
-		this.subs.add( this.auth.authState.pipe( switchMap( firebaseUser => {
-			if ( firebaseUser?.uid ) {
-				return this.getUserEntry( firebaseUser?.uid );
-			}
-			return of( null );
-		} ) ).subscribe( user => {
-			this.user$.next( user?.data() );
-		}) );
 	}
 
 
@@ -64,7 +52,6 @@ export class UserService implements OnDestroy {
 
 
 	logout(): Observable<void> {
-		this.user$.next( null );
 		return from( this.auth.signOut() );
 	}
 
@@ -75,27 +62,7 @@ export class UserService implements OnDestroy {
 
 
 	selectIsLoggedIn(): Observable<boolean> {
-		return this.auth.user.pipe( switchMap( user => {
-			if ( user?.uid ) {
-				return this.getUserEntry( user?.uid ).pipe( tap( userRef => {
-					this.user$.next( userRef.data() );
-				} ) );
-			}
-			return of( null );
-		} ), map( user => !!user?.data()?.uid ) );
-	}
-
-
-	createUserEntry( user: IUserModel ): Observable<any> {
-		return from( this.firestore.collection( 'users' ).doc( user?.uid ).set( user, { merge: true } ) );
-	}
-
-
-	getUserEntry( uid: string ): Observable<firebase.firestore.DocumentSnapshot<IUserModel>> {
-		if ( !uid ) {
-			return of( null );
-		}
-		return this.firestore.collection( 'users' ).doc( uid ).get() as Observable<firebase.firestore.DocumentSnapshot<IUserModel>>;
+		return this.auth.user.pipe( map( user => !!user?.uid ) );
 	}
 
 
@@ -104,7 +71,7 @@ export class UserService implements OnDestroy {
 	 *
 	 * @param file
 	 */
-	* uploadImage( file: File ): Generator<AngularFireUploadTask | AngularFireStorageReference> {
+	*uploadImage( file: File ): Generator<AngularFireUploadTask | AngularFireStorageReference> {
 		if ( !file ) {
 			return null;
 		}

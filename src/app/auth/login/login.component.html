@@ -46,8 +46,8 @@
 
 
 <mat-card *ngIf="layout === LayoutOptions.SignUp">
-	<mat-progress-bar class="stick-top" *ngIf="showLoading" mode="determinate" [value]="percentageValue"></mat-progress-bar>
-	<div *ngIf="showLoading" class="loading-cover">
+	<mat-progress-bar class="stick-top" *ngIf="loader" mode="determinate" [value]="percentageValue"></mat-progress-bar>
+	<div *ngIf="loader" class="loading-cover">
 		<button class="cancel-btn" (click)="onCancelUpload()" mat-icon-button><mat-icon>cancel</mat-icon></button>
 	</div>
 	<form class="form" [formGroup]="signUpForm">
