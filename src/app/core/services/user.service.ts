@@ -18,6 +18,7 @@ export class UserService implements OnDestroy {
 
 	// Used when guard is fetching state from server to show loading
 	public loader$ = new BehaviorSubject<boolean>( false );
+	public user$ : BehaviorSubject<User> = new BehaviorSubject( null );
 
 	// Subscription
 	private subs = new Subscription();
@@ -28,6 +29,7 @@ export class UserService implements OnDestroy {
 				 private router: Router,
 				 private storage: AngularFireStorage,
 	) {
+		this.subs.add( this.auth.user.subscribe(this.user$) );
 	}
 
 
@@ -56,8 +58,8 @@ export class UserService implements OnDestroy {
 	}
 
 
-	selectUser(): Observable<User> {
-		return this.auth.user;
+	selectUser(): BehaviorSubject<User> {
+		return this.user$;
 	}
 
 

@@ -2,14 +2,15 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
-import { PartialObserver, Subscription } from 'rxjs';
+import { from, PartialObserver, Subscription } from 'rxjs';
 import firebase from 'firebase';
 import { defaultProfileImage } from '../../shared/constants';
 import { AngularFireUploadTask } from '@angular/fire/storage';
 import { UtilitiesService } from '../../core/services/utilities.service';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { tap } from 'rxjs/operators';
-import UserCredential = firebase.auth.UserCredential;
+import { switchMap, tap } from 'rxjs/operators';
+import { CometChat } from '@cometchat-pro/chat';
+import { environment } from '../../../environments/environment';
 import AuthError = firebase.auth.AuthError;
 import Persistence = firebase.auth.Auth.Persistence;
 
@@ -73,12 +74,23 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 
 	public googleSignIn(): void {
-		this.subs.add( this.userService.loginWithGoogle().subscribe( this.signInObserver ) );
+		this.subs.add( this.userService.loginWithGoogle()
+			.pipe( switchMap( credentials => {
+				if ( credentials.additionalUserInfo.isNewUser ) {
+					const user = new CometChat.User( credentials.user.uid );
+					user.setName( credentials.user.displayName );
+					user.setAvatar( credentials.user.photoURL );
+					return from( CometChat.createUser( user, environment.cometConfig.authKey ) );
+				}
+
+				return from( CometChat.login( credentials?.user?.uid, environment.cometConfig.authKey ) );
+			} ) )
+			.subscribe( this.signInObserver ) );
 	}
 
 
 	public facebookSignIn(): void {
-		this.subs.add( this.userService.loginWithFacebook().subscribe( this.signInObserver ) );
+		// this.subs.add( this.userService.loginWithFacebook().subscribe( this.signInObserver ) );
 	}
 
 
@@ -225,13 +237,15 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 
 	// Observer Used for google/fb sign in
-	private get signInObserver(): PartialObserver<UserCredential> {
+	private get signInObserver(): PartialObserver<CometChat.User> {
 		return {
-			next: () => {
+			next: user => {
+				console.log( 'comet login', user );
 				this.userService.loader$.next( false );
 				this.navigateHome();
 			},
 			error: ( error: AuthError ) => {
+				this.utils.openSnackBar( 'Error Login', );
 				console.error( error?.message );
 			}
 		};
